@@ -1,0 +1,41 @@
+var configModule = require("./config");
+var clientModule = require("./client");
+var conMngr = require("./service/connectormanager");
+
+/**
+ * BeWhere Manager
+ * @class BeWhere
+ * @constructor
+ * @param {Object} [config]
+ * @param {Object} [config.client] : instance of HttpClient
+ */
+
+function BeWhere(config) {
+    
+    if (config) {
+        
+        for(var key in config){
+            this[key] = config[key]
+        }
+    }
+   
+    this.bewhere = this.bewhere ? this.bewhere : configModule.bewhere;
+    
+    this.client=this.client?this.client:new clientModule.Client({endPoint:this.bewhere.endPoint} );
+    
+}
+
+/**
+ * @method  getConnector
+ * @return {Object} : Connector Instance
+ */
+BeWhere.prototype.getConnectorManager = function() {
+  
+    if (!this.connectorManager) {
+        this.connectorManager = new conMngr.ConnectorManager({
+            client:this.client
+        });
+    }
+    
+    return this.connectorManager;
+};

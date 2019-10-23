@@ -1,0 +1,19 @@
+//The bewhere Info 
+const bewhere = {
+   	baseUrl: "api.bewhere.com",
+    endPoint: "https://api.bewhere.com/",
+    name: "BeWhere ACOUNT NAME",//not used for now but it will help you distinguish your apps
+   
+  	username: "<USER_NMAE>",
+  	apiKey:"<api_token>",
+    accountId:"<account_id>",
+
+};
+
+
+
+const errorCodeList = {
+    "missingParameter": "MISSING_PARAMETER",
+    "invalidAction": "INVALID_ACTION",
+    "notFound": "ENTITY_NOT_FOUND"
+};

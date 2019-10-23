@@ -1,0 +1,139 @@
+var config = require("../config");
+var _ = require("modules/underscore/underscore.js")._;
+var file =  require("file");
+var log = require("log"); 
+log.setLevel("info");
+/**
+ * Wrapper of the BeWhere Service APIs
+ * @class Connector
+ * @constructor
+ * @param {Object} [dto]
+ * @param {Object} [dto.client] : instance of HttpClient
+ * @param {String} [dto.endPoint] : endPoint URI that you to connect to
+ */
+
+function Connector(dto) {
+    if (!dto || !dto.client || !dto.endPoint  ) {
+        throw {
+            errorCode: config.errorCodeList['missingParameter'],
+            errorDetail: "dto and dto.client and dto.endPoint cannot be null or empty"
+        };
+    }
+
+    for (key in dto) {
+        this[key] = dto[key];
+    }
+}
+
+
+Connector.prototype.getTypesBeacons = function () {
+  	var apiUrl="types/beacon"
+  	var params = {};
+    params.method = "GET"
+    params.url = this.endPoint+apiUrl;
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
+Connector.prototype.getAuthTokens = function (data) {
+    if(! data) data={};
+  	var user=data.user?data.user:config.bewhere.username;
+      
+  	var apiUrl="authentication/"+user+"/?type=WEB"
+  	var params = {};
+    params.method = "GET"
+    params.url = this.endPoint+apiUrl;
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
+Connector.prototype.authentication = function (auth) {
+  	var apiUrl="authentication"
+  	var params = {};
+    params.method = "POST"
+    params.url = this.endPoint+apiUrl;
+  	params.bodyString=auth?JSON.stringify(auth):JSON.stringify(config.bewhere.auth);
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
+
+//beacons
+// /accounts/{accountKey}/beacons
+Connector.prototype.getBeacons = function (data) {
+    if(! data) data={};
+  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
+  	var apiUrl="accounts/"+accountId+"/beacons"
+  	var params = {};
+    params.method = "GET"
+    params.url = this.endPoint+apiUrl;
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
+
+// /accounts/{accountKey}/beacons/{id}
+Connector.prototype.getBeacon = function (data) {
+    if(! data) data={};
+  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
+  	var apiUrl="accounts/"+accountId+"/beacons/"+data.id;
+  	var params = {};
+    params.method = "GET"
+    params.url = this.endPoint+apiUrl;
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
+
+// /accounts/{accountKey}/beacons/configuration/{id}
+Connector.prototype.getBeaconConfiguration = function (data) {
+    if(! data) data={};
+  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
+  	var apiUrl="accounts/"+accountId+"/beacons/configuration/"+data.id;
+  	var params = {};
+    params.method = "GET"
+    params.url = this.endPoint+apiUrl;
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
+//snapshots
+// /accounts/{accountKey}/snapshots
+Connector.prototype.getSnapshots = function (data) {
+    if(! data) data={};
+  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
+  	var apiUrl="accounts/"+accountId+"/snapshots"
+  	var params = {};
+    params.method = "GET"
+    params.url = this.endPoint+apiUrl;
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
+
+// /accounts/{accountKey}/snapshots/{id}
+Connector.prototype.getSnapshot = function (data) {
+    if(! data) data={};
+  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
+  	var apiUrl="accounts/"+accountId+"/snapshots/"+data.id;
+  	var params = {};
+    params.method = "GET"
+    params.url = this.endPoint+apiUrl;
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
+
+//streams
+// /accounts/{accountKey}/streams/history
+Connector.prototype.getStreamsHistory = function (data) {
+    if(! data) data={};
+  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
+  	var apiUrl="accounts/"+accountId+"/streams/history"
+  	var params = {};
+    params.method = "GET"
+    params.url = this.endPoint+apiUrl;
+    
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+}
