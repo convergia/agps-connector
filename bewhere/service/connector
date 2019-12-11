@@ -74,29 +74,21 @@ Connector.prototype.getBeacons = function (data) {
 
 // /accounts/{accountKey}/beacons/{id}
 Connector.prototype.getBeacon = function (data) {
-    if(! data) data={};
-  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
-  	var apiUrl="accounts/"+accountId+"/beacons/"+data.id;
-  	var params = {};
-    params.method = "GET"
-    params.url = this.endPoint+apiUrl;
-    
-    var response = this.client.callApi(params);
-    return JSON.parse(response.body);
+    if(! data) {
+      log.info("[connector>getBeacon] error: no device ID");
+      return {};
+    } else {
+      var accountId=data.accountId?data.accountId:config.bewhere.accountId;
+      var apiUrl="accounts/"+accountId+"/beacons/"+data.deviceId;
+      var params = {};
+      params.method = "GET"
+      params.url = this.endPoint+apiUrl;
+
+      var response = this.client.callApi(params);
+      return JSON.parse(response.body);
+    }
 }
 
-// /accounts/{accountKey}/beacons/configuration/{id}
-Connector.prototype.getBeaconConfiguration = function (data) {
-    if(! data) data={};
-  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
-  	var apiUrl="accounts/"+accountId+"/beacons/configuration/"+data.id;
-  	var params = {};
-    params.method = "GET"
-    params.url = this.endPoint+apiUrl;
-    
-    var response = this.client.callApi(params);
-    return JSON.parse(response.body);
-}
 //snapshots
 // /accounts/{accountKey}/snapshots
 Connector.prototype.getSnapshots = function (data) {
@@ -113,15 +105,20 @@ Connector.prototype.getSnapshots = function (data) {
 
 // /accounts/{accountKey}/snapshots/{id}
 Connector.prototype.getSnapshot = function (data) {
-    if(! data) data={};
-  	var accountId=data.accountId?data.accountId:config.bewhere.accountId;
-  	var apiUrl="accounts/"+accountId+"/snapshots/"+data.id;
-  	var params = {};
-    params.method = "GET"
-    params.url = this.endPoint+apiUrl;
-    
-    var response = this.client.callApi(params);
-    return JSON.parse(response.body);
+    if(! data) {
+      log.info("[connector>getSnapshot] error: no device ID");
+      return {};
+    } else {
+
+      var accountId = data.accountId ? data.accountId : config.bewhere.accountId;
+      var apiUrl="accounts/"+accountId+"/snapshots/"+data.deviceId;
+      var params = {};
+      params.method = "GET"
+      params.url = this.endPoint+apiUrl;
+
+      var response = this.client.callApi(params);
+      return JSON.parse(response.body);
+    }
 }
 
 //streams
@@ -136,4 +133,41 @@ Connector.prototype.getStreamsHistory = function (data) {
     
     var response = this.client.callApi(params);
     return JSON.parse(response.body);
+}
+
+/** get beacon config */
+// /accounts/{accountKey}/beacons/configuration/{id}
+Connector.prototype.getDeviceConfig = function (data) {
+    if(! data) {
+      log.info("[connector>getDeviceConfig]error: no device ID");
+      return {};
+    } else {
+      var accountId = data.accountId?data.accountId:config.bewhere.accountId;
+      var apiUrl="accounts/"+accountId+"/beacons/configuration/"+data.deviceId
+      var params = {};
+      params.method = "GET"
+      params.url = this.endPoint+apiUrl;
+
+      var response = this.client.callApi(params);
+      return JSON.parse(response.body);
+    }
+}
+//push beacon config
+// /accounts/zaeaz/beacons/configuration/357591080108407
+// /accounts/{accountKey}/beacons/configuration/{id}
+Connector.prototype.postDeviceConfig = function (data) {
+    if(! data) {
+      log.info("no Bewhere data to post");
+      return {"errorDetail": "no Bewhere data to post"};
+    } else {
+      var accountId = ((data.accountId) ? data.accountId : config.bewhere.accountId);
+      var apiUrl="accounts/"+accountId+"/beacons/configuration/"+data.deviceId
+      var params = {};
+      params.url = this.endPoint+apiUrl;
+      params.method = "POST";
+      params.bodyString = JSON.stringify(data.bwPayload);
+    
+      var response = this.client.callApi(params);
+      return JSON.parse(response.body);
+    }
 }
