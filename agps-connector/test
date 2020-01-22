@@ -1,0 +1,29 @@
+var log = require("log"); 
+log.setLevel("info");
+var agpsModule = require('./agps');
+
+var ag = new agpsModule.Agps();
+var cnMngr = ag.getConnectorManager();
+var myConnector = cnMngr.getConnector();
+
+
+try {
+
+  var data = {
+    "mcc": 302,
+    "mnc": 610,
+    "lac": 11652,
+    "cid": 31232523,
+    "address": 1
+	}
+
+  var result= myConnector.postPayload(data);
+  log.info("info \n"+ result.status) ;
+
+  return result;
+
+} catch(exception) {
+
+  return exception;
+
+}

@@ -1,0 +1,55 @@
+var config = require("./config");
+var _ = require("modules/underscore/underscore.js")._;
+var file =  require("file");
+var log = require("log");
+log.setLevel("info");
+/**
+ * Wrapper of the BeWhere Service APIs
+ * @class Connector
+ * @constructor
+ * @param {Object} [dto]
+ * @param {Object} [dto.client] : instance of HttpClient
+ * @param {String} [dto.endPoint] : endPoint URI that you connect to
+ */
+
+function Connector(dto) {
+  if (!dto || !dto.client || !dto.endPoint  ) {
+    throw {
+      errorCode: config.errorCodeList['missingParameter'],
+      errorDetail: "dto and dto.client and dto.endPoint cannot be null or empty"
+    };
+  }
+
+  for (key in dto) {
+    this[key] = dto[key];
+  }
+}
+
+Connector.prototype.postPayload = function (data) {
+  if(! data) {
+    return {"errorDetail": "no data to post"};
+  } else {
+    var payload = config.agpsParam.payloadBase;
+    payload.token = config.agpsParam.apiToken;
+    payload.radio = ((data.radio) ? data.radio : config.agpsParam.defaultRadio);
+
+    payload.mcc = data.mcc;// better if tested !=0
+    payload.mnc = data.mnc;// better if tested !=0
+    payload.cells = [{
+        "lac": data.lac,// better if tested !=0
+        "cid": data.cid,// better if tested !=0
+        "psc": 0
+    }];
+    payload.address = ((data.address) ? data.address : payload.address);
+    
+
+    var apiUrl="process.php"
+    var params = {};
+    params.url = this.endPoint+apiUrl;
+    params.method = "POST";
+    params.bodyString = JSON.stringify(payload);//data.agpsPayload
+
+    var response = this.client.callApi(params);
+    return JSON.parse(response.body);
+  }
+}

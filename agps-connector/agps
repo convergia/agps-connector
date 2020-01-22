@@ -1,35 +1,34 @@
 var configModule = require("./config");
 var clientModule = require("./client");
-var conMngr = require("./service/connectormanager");
+var conMngr = require("./connectormanager");
 
 /**
- * BeWhere Manager
- * @class BeWhere
+ * agps Manager
+ * @class Agps
  * @constructor
  * @param {Object} [config]
  * @param {Object} [config.client] : instance of HttpClient
  */
 
-function BeWhere(config) {
+function Agps(config) {
 
   if (config) {
-
     for(var key in config){
       this[key] = config[key]
     }
   }
 
-  this.bewhere = this.bewhere ? this.bewhere : configModule.bewhere;
+  this.agpsParam = this.agpsParam ? this.agpsParam : configModule.agpsParam;
   
-  this.client=this.client?this.client:new clientModule.Client({endPoint:this.bewhere.endPoint} );
-  
+  this.client = this.client ? this.client : new clientModule.Client({endPoint:this.agpsParam.endPoint} );
+
 }
 
 /**
  * @method  getConnector
  * @return {Object} : Connector Instance
  */
-BeWhere.prototype.getConnectorManager = function() {
+Agps.prototype.getConnectorManager = function() {
 
   if (!this.connectorManager) {
     this.connectorManager = new conMngr.ConnectorManager({
